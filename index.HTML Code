@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>World Wide Weather</title>
+   <link rel="stylesheet" href="style.css">
+</head>
+    <body background="images\bodyBackground1.jpg"  background-repeat="no-repeat" background-size="cover">
+        <div class="card">
+            <div class="search">
+                <input id="searchText" type="text" placeholder="Enter City Name" spellcheck="false">
+                <button type="button" id="searchButton"><img src= "images/search.png"></button>
+            </div>
+            <br>
+            <div class="error">
+                <img src="images/404-Error-Page-Not-Found.png" alt="">
+                <h3 id="cityError" style="color:White">Invalid City Name</h3>
+            </div>
+            
+            <div class="weatherData">
+                <img src="images/rain.png" class="weatherIcon" id="WeatherImage">
+                <h1 class="temp" id="temp">TEMP</h1>
+                <h2 class="city" id="city">CITY</h2>
+            
+                <div class="details">
+                    <div class="col">
+                        <img src="images/humidity.png">
+                        <div>
+                            <p class="Humidity"></p>
+                            <p>Humidity</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <img src="images/wind.png">
+                        <div>
+                            <p class="wind"></p>
+                            <p>Wind Speed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <script>
+            
+            const serachBox = document.querySelector("#searchText");
+            const searchBtn = document.querySelector("#searchButton");
+            document.querySelector(".error").style.display="none";
+            document.querySelector(".weatherData").style.display="none";
+           
+            const apiurl = "https://api.openweathermap.org/data/2.5/weather?appid=050f8d2384752c7f2578b684a4affede&units=metric&q=";
+            async function checkWeather(city){
+                console.log(apiurl+city);
+                const response = await fetch(apiurl+city);
+                var data = await response.json();
+               
+                if(response.status == 404){
+                    document.querySelector(".error").style.display="block"
+                    document.querySelector(".weatherData").style.display="none";
+                }else{
+                   document.querySelector(".city").innerHTML=data.main.temp
+                   document.querySelector(".temp").innerHTML=data.name
+                   document.querySelector(".Humidity").innerHTML = data.main.humidity + "%";
+                   document.querySelector(".wind").innerHTML = data.wind.speed + "km/h";
+                   
+                    if(data.weather[0].main == "Clouds"){
+                        //weatherIcon.src = "images/clouds.png";
+                        document.querySelector("#WeatherImage").src="images/clouds.png";
+                    }
+                    else if(data.weather[0].main == "Clear"){
+                        document.querySelector("#WeatherImage").src = "images/clear.png";
+                    }
+                    else if(data.weather[0].main == "Rain"){
+                        document.querySelector("#WeatherImage").src = "images/rainypng";
+                    }
+                    else if(data.weather[0].main == "Drizzle"){
+                        weatherIcon.src = "images/drizzle.png";
+                    }
+                    else if(data.weather[0].main == "Mist"){
+                        document.querySelector("#WeatherImage").src = "images/mist.png";
+                    } 
+                    document.querySelector(".error").style.display="none";
+                    document.querySelector(".weatherData").style.display="block";
+                }
+                
+                
+            }
+            //checkWeather("Bangalore");
+            searchBtn.addEventListener("click",()=>{
+                
+                checkWeather(serachBox.value);
+            }) 
+        </script>
+    
+    </body>
+</html>
